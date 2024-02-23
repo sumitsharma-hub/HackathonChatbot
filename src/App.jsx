@@ -1,19 +1,24 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
-import { ChatPage } from './pages'
-import Resize from './pages/Resize'
+import React from "react";
+import "./App.css";
+import { ChatPage, Drug, ImageUpload } from "./pages";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { Configurator } from "./components";
+
 function App() {
-  const [count, setCount] = useState(0)
-
   return (
-    <>
-      <ChatPage/>
-      {/* <Resize/>  */}
-
-    </>
-  )
+    <BrowserRouter>
+      <div className="flex">
+        <Configurator />
+        <div className="flex-1">
+          <Routes>
+            <Route path={"/"} element={<ChatPage />} />
+            <Route path={"/drug"} element={<Drug />} />
+            <Route path={"/image-upload"} element={<ImageUpload />} />
+          </Routes>
+        </div>
+      </div>  
+    </BrowserRouter>
+  );
 }
 
-export default App
+export default App;

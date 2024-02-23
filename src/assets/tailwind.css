@@ -4,6 +4,23 @@
 
 
 
+
+
+
+.theme-light{
+  color: black;
+  background-color: #adc0da ;
+}
+
+.custom-box-shadow {
+    /* box-shadow: rgba(0, 0, 0, 0.19) 0px 10px 20px, rgba(0, 0, 0, 0.23) 0px 6px 6px; */
+    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+  }
+  
+
+.font-size{
+    font-size: 1.5rem;
+}
   
   .scrollbar-visible {
     scrollbar-color: #888 #f1f1f1; /* Adjust colors as needed */

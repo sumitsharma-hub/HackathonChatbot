@@ -1,6 +1,6 @@
 // src/pages/ChatPage.js
 import React, { useEffect, useState } from "react";
-import { Analyze, ChatInput, ChatMessages, Configurator } from "../../components";
+import { Analyze, ChatInput, ChatMessages, Configurator, ThemeToggle } from "../../components";
 import { FaChevronRight } from "react-icons/fa";
 import { FaChevronLeft } from "react-icons/fa";
 
@@ -10,22 +10,36 @@ const ChatPage = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [botLogs, setBotLogs] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
-
+  const [isLastBot, setIsLastBot] = useState(false);
   const storedSessionId = localStorage.getItem("session_id");
   const [session_id, setSessionId] = useState(storedSessionId || generateNewSessionId());
 
- useEffect(() => {
-    // Save the session_id to localStorage whenever it changes
-    localStorage.setItem('session_id', session_id);
+  const [isDarkMode, setIsDarkMode] = useState(localStorage.getItem("isDarkMode") === "true");
 
-    // Add an event listener to refresh the session_id when the user closes the tab or refreshes the page
+  useEffect(() => {
+    const handleThemeChange = () => {
+      setIsDarkMode(localStorage.getItem("isDarkMode") === "true");
+    };
+    window.addEventListener("themeChange", handleThemeChange);
+    return () => {
+      window.removeEventListener("themeChange", handleThemeChange);
+    };
+  }, []);
+
+  const handleModel = (selectedModel) => {
+    setCurrentModel(selectedModel);
+  };
+
+  useEffect(() => {
+    // Save the session_id to localStorage whenever it changes
+    localStorage.setItem("session_id", session_id);
+
     const handleUnload = () => {
       const newSessionId = generateNewSessionId();
-      localStorage.setItem('session_id', newSessionId);
+      localStorage.setItem("session_id", newSessionId);
     };
 
     window.onunload = handleUnload;
-
     // Clean up the event listener when the component is unmounted
     return () => {
       window.onunload = null;
@@ -44,12 +58,16 @@ const ChatPage = () => {
     setIsOpen(!isOpen);
   };
 
+  const handleQuickReplyClick = (quickReplyText) => {
+    // Handle sending a user message logic here for quick replies
+    handleSendMessage(quickReplyText);
+  };
+
   const handleSendMessage = async (text) => {
     // Handle sending a user message logic here
     const userMessage = { id: Date.now(), text, isBot: false };
     setMessages([...messages, userMessage]);
 
-    // Make a POST API call to get a bot response
     const payload = {
       session_id: session_id,
       body: text,
@@ -57,9 +75,14 @@ const ChatPage = () => {
       diseases_list: [],
       chat_history: [],
     };
+    const apiUrls = {
+      model1: import.meta.env.VITE_PUBLIC_DIAGNOSIS_API_URL,
+      model2: import.meta.env.VITE_PUBLIC_DRUG_API_URL,
+      model3: "your_api_url_for_model3",
+    };
     setIsLoading(true);
     try {
-      const response = await fetch(import.meta.env.VITE_PUBLIC_API_URL, {
+      const response = await fetch(apiUrls[currentModel], {
         method: "POST",
         body: JSON.stringify(payload),
         headers: {
@@ -76,48 +99,57 @@ const ChatPage = () => {
       const botResponseData = await response.json();
       setBotLogs(botResponseData);
       const botResponse = { id: Date.now() + 1, text: botResponseData.summarized_question, isBot: true };
+      const isLastBot = botResponse.isBot && !isLoading;
 
       setMessages([...messages, userMessage, botResponse]);
+      setIsLastBot(isLastBot);
     } catch (error) {
       console.error("Error fetching bot response:", error.message);
       const errorMessage = { id: Date.now() + 2, text: error.message, isBot: true, isError: true };
       setMessages([...messages, errorMessage]);
       setIsLoading(false);
-      // Handle error as needed
     } finally {
       setIsLoading(false);
     }
   };
 
   const handleQuickReply = (quickReplyText) => {
-    // Handle sending a quick reply logic here
     handleSendMessage(quickReplyText);
   };
 
   return (
-    <div className="flex h-screen overflow-hidden" style={{ backgroundColor: "#343541" }}>
-      {/* {isOpen ? ( */}
-      <div className={` ${isOpen ? "hidden" : "w-72 bg-black p-4"}`}>
-        <div className="bg-white p-4">
-          <img src="./images/innova.png" alt="" />
+    <div className={`flex h-screen overflow-hidden ${isDarkMode ? "bg-white" : "bg-[#343541]"}`}>
+      {/* <div className={` ${isOpen ? "hidden" : "w-72 p-4"} ${isDarkMode ? "bg-[#adc0da]" : "bg-black"}`}>
+        <div className={`${isDarkMode ? "bg-[#adc0da]" : "bg-white"}`}>
+          <img src="./images/innovadocTransparent.png" alt="" />
         </div>
-        <Configurator type={false} handleLeftPanel={handleLeftPanel} show={isOpen} />
-      </div>
-      {/* ) : null} */}
+        <Configurator type={false} handleLeftPanel={handleLeftPanel} show={isOpen} isDarkMode={isDarkMode} handleModel={handleModel} isOpen={isOpen} />
+      </div> */}
       <button
-        className={` ${
-          isOpen ? "left-4" : "left-72"
-        } ml-2 close-left-panel-button absolute  top-72 w-2 h-8 rounded-t-lg rounded-b-lg bg-black z-10 `}
+        className={` ${isOpen ? "left-0" : "left-72"} ml-2 close-left-panel-button absolute top-72 z-10 `}
         onClick={handleLeftPanel}
-        {...(isOpen ? <FaChevronRight /> : <FaChevronLeft />)}
-      ></button>
+      >
+        {isOpen ? <FaChevronRight className="font-size" /> : <FaChevronLeft className="font-size" />}
+      </button>
       <div className="flex-1 flex flex-col overflow-y-auto hide-scroll">
-        <ChatMessages messages={messages} onQuickReply={handleQuickReply} isLoading={isLoading} />
-        <ChatInput onSendMessage={handleSendMessage} />
+        <ChatMessages
+          messages={messages}
+          onQuickReply={handleQuickReply}
+          isLoading={isLoading}
+          isLastBot={isLastBot}
+          expand={isOpen}
+          isDarkMode={isDarkMode}
+          handleQuickReplyClick={handleQuickReplyClick}
+        />
+        <ChatInput onSendMessage={handleSendMessage} isDarkMode={isDarkMode} />
       </div>
-      <div className="w-1/4 bg-black p-4 overflow-y-auto hide-scroll">
-        {/* <Configurator type={false} /> */}
-        <Analyze logs={botLogs} />
+      <div
+        className={`${!isOpen ? "w-1/4" : "w-2/5"} ${
+          isDarkMode ? "bg-[#adc0da]" : "bg-black"
+        }  p-4 overflow-y-auto hide-scroll`}
+      >
+        {/* <ThemeToggle handleToggle={handleToggle} isDarkMode={isDarkMode} /> */}
+        <Analyze logs={botLogs} isDarkMode={isDarkMode} />
       </div>
     </div>
   );
