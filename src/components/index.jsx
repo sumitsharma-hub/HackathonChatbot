@@ -7,4 +7,16 @@ import Loader from "./Loader";
 import ThemeToggle from "./ThemeButton";
 import QuickReplies from "./Quickreplies";
 import ImageInput from "./ImageInput";
-export { Analyze, Chat, ChatInput, ChatMessages, Configurator, Loader, ImageInput, ThemeToggle, QuickReplies };
+import TogglePanel from "./TogglePanel";
+export {
+  Analyze,
+  Chat,
+  ChatInput,
+  ChatMessages,
+  Configurator,
+  Loader,
+  ImageInput,
+  ThemeToggle,
+  QuickReplies,
+  TogglePanel,
+};

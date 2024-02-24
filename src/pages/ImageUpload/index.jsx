@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { ChatInput, ImageInput, Loader } from "../../components";
+import { ChatInput, ImageInput, Loader, TogglePanel } from "../../components";
 
 const ImageUpload = () => {
   const [selectedImage, setSelectedImage] = useState(null);
@@ -45,9 +45,7 @@ const ImageUpload = () => {
       }
 
       const jsonData = await response.json();
-      console.log(jsonData, "this is json data-->");
-      // const summarizedQuestion = jsonData.summarized_question;
-      setApiResponse(summarizedQuestion);
+      setApiResponse(jsonData);
     } catch (error) {
       setIsLoading(false);
       console.error("Error uploading image and fetching data from API", error);
@@ -73,26 +71,31 @@ const ImageUpload = () => {
   };
 
   return (
-    <div className={`flex h-screen overflow-hidden  flex-col items-center ${isDarkMode ? "bg-white" : "bg-[#343541]"}`}>
-      <div className={`w-full ${isDarkMode ? "text-black" : "text-white"} mb-4 text-center`}>
-        <h2 className="text-2xl font-bold  custom-box-shadow p-5">Upload an Image for Diagnosis</h2>
+    <>
+      <TogglePanel />
+      <div
+        className={`flex h-screen overflow-hidden  flex-col items-center ${isDarkMode ? "bg-white" : "bg-[#343541]"}`}
+      >
+        <div className={`w-full ${isDarkMode ? "text-black" : "text-white"} mb-4 text-center`}>
+          <h2 className="text-2xl font-bold  inputBoxShadow p-5">Upload an Image for Diagnosis</h2>
+        </div>
+        <ImageInput onSelectImage={handleImageSelect} />
+        {selectedImage && (
+          <img src={URL.createObjectURL(selectedImage)} alt="Selected" className="mt-4 max-w-md w-full" />
+        )}
+        <button onClick={handleImageUpload} className="mt-4 bg-blue-500 text-white py-2 px-4 rounded">
+          Upload Image
+        </button>
+        {isLoading ? (
+          <Loader />
+        ) : (
+          <div className={` ${isDarkMode ? "text-black" : "text-white"} mt-10`}>
+            <span>Model Predection: </span>
+            <span className="font-bold">{apiResponse.class}</span>
+          </div>
+        )}
       </div>
-      <ImageInput onSelectImage={handleImageSelect} />
-      {selectedImage && (
-        <img src={URL.createObjectURL(selectedImage)} alt="Selected" className="mt-4 max-w-md w-full" />
-      )}
-      <button onClick={handleImageUpload} className="mt-4 bg-blue-500 text-white py-2 px-4 rounded">
-        Upload Image
-      </button>
-      {isLoading ? (
-        <Loader />
-      ) : (
-        <div
-          dangerouslySetInnerHTML={{ __html: apiResponse }}
-          className={`overflow-y-auto ${isDarkMode ? "text-black" : "text-white"}`}
-        />
-      )}
-    </div>
+    </>
   );
 };
 

@@ -20,7 +20,7 @@ const ThemeToggle = () => {
     window.dispatchEvent(event);
   }, [isDarkMode]);
   return (
-    <div>
+    <div className="absolute bottom-10">
       <input type="checkbox" className="checkbox" id="checkbox" checked={isDarkMode} onChange={handleToggle} />
       <label htmlFor="checkbox" className="checkbox-label border-2 border-white">
         {isDarkMode ? <FaMoon style={{ color: "yellow" }} /> : <FaRegSun style={{ color: "orange" }} />}

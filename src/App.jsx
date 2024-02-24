@@ -3,6 +3,7 @@ import "./App.css";
 import { ChatPage, Drug, ImageUpload } from "./pages";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { Configurator } from "./components";
+import Resize from "./pages/Resize";
 
 function App() {
   return (

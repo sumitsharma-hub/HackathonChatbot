@@ -17,6 +17,10 @@
     box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
   }
   
+  .inputBoxShadow {
+    /* box-shadow: rgba(0, 0, 0, 0.05) 0px 6px 24px 0px, rgba(0, 0, 0, 0.08) 0px 0px 0px 1px; */
+    box-shadow: rgba(50, 50, 93, 0.25) 0px 2px 5px -1px, rgba(0, 0, 0, 0.3) 0px 1px 3px -1px;
+  }
 
 .font-size{
     font-size: 1.5rem;
@@ -51,3 +55,44 @@
     background: #555;
   }
   
+  @media (max-width: 1080px) {
+    .hidden-sidebar {
+      display: none !important;
+    }
+  }
+
+
+
+h1 {
+  @apply text-2xl font-bold mb-4;
+}
+
+h2 {
+  @apply text-xl font-bold mb-4;
+}
+h3 {
+  @apply text-lg font-bold mb-4;
+}
+h4 {
+  @apply text-xl font-bold mb-4;
+}
+h5 {
+  @apply text-base font-bold mb-4;
+}
+h6 {
+  @apply text-base font-bold mb-4;
+}
+
+
+
+p {
+  @apply text-base font-normal mb-4;
+}
+
+ul {
+  @apply list-disc pl-4;
+}
+
+li {
+  @apply text-base font-normal;
+}
