@@ -6,8 +6,28 @@ const Analyze = (props) => {
   function capitalizeWords(str) {
     return str.replace(/\b[a-z]/g, (match) => String.fromCharCode(match.charCodeAt(0) - 32));
   }
+
+  const renderValue = (value) => {
+    if (typeof value === "string" && value.includes("\n")) {
+      // If the value has new lines, split it and render each line separately
+      const lines = value.split("\n");
+      return (
+        <div>
+          {lines.map((line, idx) => (
+            <React.Fragment key={idx}>
+              {line}
+              <br />
+            </React.Fragment>
+          ))}
+        </div>
+      );
+    } else {
+      return <span className="log-value">{JSON.stringify(value)}</span>;
+    }
+  };
+
   return (
-    <div className="p-4 flex gap-1 items-center break-words">
+    <div className="p-4 pb-0 flex gap-1 items-center break-words">
       <div className="flex gap-4 max-w-full">
         <div className={`w-full ${isDarkMode ? "text-black" : "text-white"}`}>
           <div className="relative right-0">
@@ -26,10 +46,9 @@ const Analyze = (props) => {
                       ))}
                     </ul>
                   ) : (
-                    <span className="log-value">{JSON.stringify(value)}</span>
+                    renderValue(value)
                   )}
                 </div>
-
               ))}
             </div>
           </div>

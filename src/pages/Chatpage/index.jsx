@@ -75,9 +75,6 @@ const ChatPage = () => {
     const payload = {
       session_id: session_id,
       body: text,
-      symptoms_list: [],
-      diseases_list: [],
-      chat_history: [],
     };
     setIsLoading(true);
     try {
@@ -89,7 +86,7 @@ const ChatPage = () => {
         },
       });
 
-      if (response.status === 500) {
+      if (response.status === 500 || response.status === 503) {
         setIsLoading(false);
         alert("Server Error! Please Try Again Later.");
         throw new Error("Failed to fetch bot response");
@@ -117,11 +114,11 @@ const ChatPage = () => {
   };
 
   return (
-    <div className={`flex h-screen overflow-hidden ${isDarkMode ? "bg-white" : "bg-[#343541]"}`}>
+    <div className={`flex h-screen ${isDarkMode ? "bg-white" : "bg-[#343541]"}`}>
       <TogglePanel />
       <div className="flex-1 flex flex-col overflow-y-auto hide-scroll">
         <div
-          className={`header h-14 flex items-center ${
+          className={`header h-14 flex items-center  ${
             isDarkMode ? " text-black" : " text-white"
           } w-full  p-2 pl-0  text-bolder text-xl custom-box-shadow bg-cover overflow-y-auto`}
         >
@@ -136,12 +133,12 @@ const ChatPage = () => {
           isDarkMode={isDarkMode}
           handleQuickReplyClick={handleQuickReplyClick}
         />
-        <ChatInput onSendMessage={handleSendMessage} isDarkMode={isDarkMode} />
+        <ChatInput onSendMessage={handleSendMessage} isDarkMode={isDarkMode} isLoading={isLoading} />
       </div>
       <div
         className={`${!isOpen ? "w-96" : "w-2/5"}  ${
           isDarkMode ? "bg-[#adc0da]" : "bg-black"
-        }  p-4 overflow-y-autos hide-scroll hidden-sidebar`}
+        }  p-4 pt-0  overflow-y-autos hide-scroll hidden-sidebar`}
       >
         <Analyze logs={botLogs} isDarkMode={isDarkMode} />
       </div>

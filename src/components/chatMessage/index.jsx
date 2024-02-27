@@ -1,11 +1,11 @@
 // src/components/ChatMessages.js
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Chat from "../Chat";
 
 import Configurator from "../Configurator";
 import QuickReplies from "../Quickreplies";
 
-const ChatMessages = ({ messages, isLoading, isLastBot, isDarkMode, handleQuickReplyClick }) => {
+const ChatMessages = ({ messages, isLoading, isDarkMode, handleQuickReplyClick }) => {
   if (messages.length === 0) {
     return (
       <div className="flex-1">
@@ -14,19 +14,23 @@ const ChatMessages = ({ messages, isLoading, isLastBot, isDarkMode, handleQuickR
     );
     // return <Configurator type={true}/>
   }
-  const [lastBotIndex, setLastBotIndex] = useState(null);
+  const [botResponseLoading, setBotResponseLoading] = useState(false);
+  const lastBotIndexRef = useRef(null);
+  const messagesEndRef = useRef(null);
+  const chatContainerRef = useRef(null);
 
   useEffect(() => {
-    if (isLoading) {
-      // Find the index of the last bot message
-      const lastIndex = messages.findIndex((message) => message.isBot);
-      setLastBotIndex(lastIndex);
+    if (messagesEndRef.current) {
+      messagesEndRef.current.scrollIntoView({ behavior: "smooth", block: "end" });
     }
   }, [isLoading, messages]);
 
   return (
     <>
-      <div className="flex-1 justify-start flex-col overflow-y-auto p-4 md:p-0 stretch flex gap-3 last:mb-2 md:mx-4 md:last:mb-6 lg:max-w-2xl xl:max-w-screen-xl hide-scroll">
+      <div
+        ref={chatContainerRef}
+        className="flex-1 text-left w-full justify-start flex-col overflow-y-auto p-4  stretch flex gap-3 last:mb-2  md:last:mb-6 lg:max-w-2xl lg:mx-auto xl:max-w-screen-xl xl:pl-16 hide-scroll"
+      >
         {messages.map((message, index) => (
           <Chat
             key={message.id}
@@ -35,10 +39,10 @@ const ChatMessages = ({ messages, isLoading, isLastBot, isDarkMode, handleQuickR
             type={message}
             profilePhoto={message.isBot ? botProfilePhoto : userProfilePhoto}
             isLoading={isLoading}
-            isLastBot={isLastBot}
             isDarkMode={isDarkMode}
           />
         ))}
+        <div ref={messagesEndRef} /> {/* This div serves as the reference point for scrolling */}
       </div>
     </>
   );

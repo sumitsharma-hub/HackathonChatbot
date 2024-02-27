@@ -1,14 +1,14 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useImperativeHandle, useRef, useState } from "react";
 import { IoIosChatboxes } from "react-icons/io";
-import { FaSearchPlus } from "react-icons/fa";
-import { FaImage } from "react-icons/fa6";
+import { FaSearchPlus, FaImage } from "react-icons/fa";
 import { Link, useLocation } from "react-router-dom";
 import ThemeToggle from "../ThemeButton";
+import { FaChevronLeft, FaChevronRight } from "react-icons/fa6";
 
 const Configurator = ({ type }) => {
   const [isDarkMode, setIsDarkMode] = useState(localStorage.getItem("isDarkMode") === "true");
   const [isOpen, setIsOpen] = useState(localStorage.getItem("isOpen") === "true");
-  const [isHidden, setIsHidden] = useState(window.innerWidth <= 1080);
+  const [isHidden, setIsHidden] = useState(localStorage.getItem("isHidden") === "true");
 
   const location = useLocation();
   const sidebarContent = useRef();
@@ -32,18 +32,13 @@ const Configurator = ({ type }) => {
       window.removeEventListener("themeChange", handleThemeChange);
       window.removeEventListener("togglePanel", handleTogglePanel);
       window.removeEventListener("resize", handleResize);
-
     };
   }, []);
-
   useEffect(() => {
-    const sidebarToggle = sidebarContent.current;
-    if (sidebarToggle && sidebarToggle.classList.contains("hidden-sidebar")) {
-      console.log("the class is present-->");
-    } else {
-      console.log("the class is not present--->");
-    }
-  }, [sidebarContent, isOpen]);
+    // setIsOpen();
+    localStorage.setItem("isOpen", false);
+    localStorage.setItem("isHidden", false);
+  }, []);
 
   return (
     <>
@@ -54,7 +49,12 @@ const Configurator = ({ type }) => {
         }`}
       >
         <div className={`${isDarkMode ? "bg-[#adc0da]" : "bg-white"}`}>
-          <img src="./images/innovanew.png" alt="" />
+          {isDarkMode ? (
+            <img src="./images/innovanewTransparent.png" alt="" />
+          ) : (
+            <img src="./images/innovanew.png" alt="" />
+            )}
+            {/* <img src="./images/innovanew.png" alt="" /> */}
         </div>
 
         <div className={`flex-1 p-0 mt-4 flex gap-10 items-center justify-center `}>

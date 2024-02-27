@@ -63,7 +63,6 @@ const Drug = () => {
       setIsLoading(false);
     }
   };
-  console.log(apiResponse, "this is apiReposne-->");
 
   return (
     <>

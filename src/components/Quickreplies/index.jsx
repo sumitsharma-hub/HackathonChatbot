@@ -47,7 +47,7 @@ const QuickReplies = ({ type, handleLeftPanel, show, handleQuickReplyClick }) =>
 
   return (
     <>
-      <div className={`flex-1 p-4 flex flex-col items-center justify-center left-panel `}>
+      <div className={`flex-1 p-4 flex flex-col items-center justify-center left-panel h-full `}>
         {!type ? null : (
           <div>
             <img src="./images/generativeAI.png" alt="Placeholder" className="mb-4" />
@@ -56,9 +56,9 @@ const QuickReplies = ({ type, handleLeftPanel, show, handleQuickReplyClick }) =>
         <div
           className={`grid gap-4 ${
             isDarkMode ? "text-black" : "text-white"
-          } last:mb-2 md:mx-4 md:last:mb-6 lg:max-w-2xl xl:max-w-3xl`}
+          } last:mb-2 md:mx-4 md:last:mb-6 lg:max-w-2xl xl:max-w-3xl h-full content-center md:content-end`}
         >
-          <div className={`text-center mb-4 mt-40 max-w-fit ${isDarkMode ? "text-black" : "text-white"}`}>
+          <div className={`text-center  ${isDarkMode ? "text-black" : "text-white"}`}>
             <h1 className={`text-3xl font-bolder ${isDarkMode ? "text-black" : "text-white"}`}>Welcome to INNODOC!</h1>
             <p className="text-white-600">
               Please share your symptoms or concerns, and ensure to answer all the questions in the DIAGNOSIS section so
@@ -67,21 +67,19 @@ const QuickReplies = ({ type, handleLeftPanel, show, handleQuickReplyClick }) =>
           </div>
           <div className="flex-grow grid grid-cols-2 gap-4 mt-10  ">
             {QuickRepliesArray.map((model) => (
-              <div
+              <a
                 key={model.id}
+                onClick={() => handleQuickReplyClick(model.description)}
                 className={`flex flex-col p-1 rounded bg-blue-50 gap-5 ${
                   activeTab === model.id ? "bg-blue-200" : ""
-                } bg-inherit hover:bg-gray-400 border-2 rounded-2xl border-gray-500 hidden md:block `}
+                } bg-inherit hover:bg-gray-400 border-2 rounded-2xl border-gray-500 hidden md:block cursor-pointer `}
               >
-                <button
-                  onClick={() => handleQuickReplyClick(model.description)}
-                  className={`flex flex-col align-middle text-center cursor-pointer rounded p-2`}
-                >
+                <button className={`flex flex-col align-middle text-center cursor-pointer rounded p-2`}>
                   <span className="ml-1 font-bold">{model.label}</span>
                   {/* <p className="text-sm">{model.title}</p> */}
                   <p className="text-xs mb-0 text-left font-bold opacity-50">{model.description}</p>
                 </button>
-              </div>
+              </a>
             ))}
           </div>
         </div>
