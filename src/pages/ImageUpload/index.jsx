@@ -81,9 +81,9 @@ const ImageUpload = () => {
         </div>
         <ImageInput onSelectImage={handleImageSelect} />
         {selectedImage && (
-          <img src={URL.createObjectURL(selectedImage)} alt="Selected" className="mt-4 max-w-md w-full" />
+          <img src={URL.createObjectURL(selectedImage)} alt="Selected" className="mt-4 max-w-60 w-full" />
         )}
-        <button onClick={handleImageUpload} className="mt-4 bg-blue-500 text-white py-2 px-4 rounded">
+        <button onClick={handleImageUpload} className="mt-4 bg-blue-500 text-white py-2 px-4 rounded mb-2">
           Upload Image
         </button>
         {isLoading ? (

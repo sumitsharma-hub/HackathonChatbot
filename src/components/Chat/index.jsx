@@ -4,12 +4,14 @@ import { FaRegClipboard } from "react-icons/fa6";
 import Loader from "../Loader";
 import { TypeAnimation } from "react-type-animation";
 
-const Chat = ({ author, message, type, profilePhoto, isLoading, isDarkMode }) => {
+const Chat = ({ author, message, type, profilePhoto, isLoading, isDarkMode, botLogs }) => {
   const [isHovered, setIsHovered] = useState(false);
   const [isAnimated, setIsAnimated] = useState(false);
   const [copied, setCopied] = useState(false);
   const picture = profilePhoto;
 
+
+  console.log('this is end value--?', botLogs.end)
   const handleCopy = () => {
     navigator.clipboard.writeText(message);
     setCopied(true);
@@ -27,6 +29,26 @@ const Chat = ({ author, message, type, profilePhoto, isLoading, isDarkMode }) =>
       }
     }
   }, [isLoading, message, isAnimated, type.isBot]);
+
+  const renderValue = (value) => {
+    if (typeof value === "string" && value.includes("\n")) {
+      // If the value has new lines, split it and render each line separately
+      const lines = value.split("\n");
+      return (
+        <div>
+          {lines.map((line, idx) => (
+            <React.Fragment key={idx}>
+              {line}
+              <br />
+            </React.Fragment>
+          ))}
+        </div>
+      );
+    } else {
+      return <span className="log-value">{JSON.stringify(value)}</span>;
+    }
+  };
+
   return (
     <>
       <div
@@ -53,7 +75,9 @@ const Chat = ({ author, message, type, profilePhoto, isLoading, isDarkMode }) =>
             </a>
             {type.isBot && !type.isError ? (
               <>
-                {isAnimated && (
+                {isAnimated && botLogs?.end === 1 ? (
+                  renderValue(message)
+                ) : (
                   <TypeAnimation sequence={[message]} speed={90} cursor={false} style={{ display: "block" }} />
                 )}
                 <div className={`flex mt-6 ${!isLoading && !isHovered ? "opacity-0 pointer-events-none" : ""}`}>

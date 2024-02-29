@@ -5,7 +5,7 @@ import Chat from "../Chat";
 import Configurator from "../Configurator";
 import QuickReplies from "../Quickreplies";
 
-const ChatMessages = ({ messages, isLoading, isDarkMode, handleQuickReplyClick }) => {
+const ChatMessages = ({ messages, isLoading, isDarkMode, handleQuickReplyClick, botLogs }) => {
   if (messages.length === 0) {
     return (
       <div className="flex-1">
@@ -24,6 +24,7 @@ const ChatMessages = ({ messages, isLoading, isDarkMode, handleQuickReplyClick }
       messagesEndRef.current.scrollIntoView({ behavior: "smooth", block: "end" });
     }
   }, [isLoading, messages]);
+  console.log(botLogs,'this is messages array')
 
   return (
     <>
@@ -40,6 +41,8 @@ const ChatMessages = ({ messages, isLoading, isDarkMode, handleQuickReplyClick }
             profilePhoto={message.isBot ? botProfilePhoto : userProfilePhoto}
             isLoading={isLoading}
             isDarkMode={isDarkMode}
+            end={message.end}
+            botLogs={botLogs}
           />
         ))}
         <div ref={messagesEndRef} /> {/* This div serves as the reference point for scrolling */}

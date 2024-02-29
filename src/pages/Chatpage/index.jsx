@@ -94,7 +94,7 @@ const ChatPage = () => {
 
       const botResponseData = await response.json();
       setBotLogs(botResponseData);
-      const botResponse = { id: Date.now() + 1, text: botResponseData.summarized_question, isBot: true };
+      const botResponse = { id: Date.now() + 1, text: botResponseData.summarized_question, isBot: true, response:response };
       const isLastBot = botResponse.isBot && !isLoading;
 
       setMessages([...messages, userMessage, botResponse]);
@@ -132,6 +132,7 @@ const ChatPage = () => {
           expand={isOpen}
           isDarkMode={isDarkMode}
           handleQuickReplyClick={handleQuickReplyClick}
+          botLogs={botLogs}
         />
         <ChatInput onSendMessage={handleSendMessage} isDarkMode={isDarkMode} isLoading={isLoading} />
       </div>
